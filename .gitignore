@@ -24,3 +24,7 @@ yarn-error.log*
 
 # Notes taken while developping
 /notes
+
+# Environment variables
+.env
+/build
