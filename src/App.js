@@ -1,24 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React from "react";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { useImmerReducer } from "use-immer";
+
+// Context
+import StateContext from "./StateContext";
+import DispatchContext from "./DispatchContext";
+
+// Components
+import Connection from "./components/Connection";
+import Home from "./components/Home";
 
 function App() {
+  // Context
+  function globalStateReducer(draft, action) {
+    switch (action.type) {
+      case "setToken":
+        draft.apiToken = action.value;
+        break;
+      default:
+        throw new Error("The action type doesn't match any case");
+    }
+  }
+
+  const initialGlobalState = { apiToken: null };
+
+  const [globalState, globalDispatch] = useImmerReducer(
+    globalStateReducer,
+    initialGlobalState
+  );
+
+  // Router
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DispatchContext.Provider value={globalDispatch}>
+      <StateContext.Provider value={globalState}>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" exact>
+              <Connection />
+            </Route>
+            <Route path="/home" exact>
+              <Home />
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </StateContext.Provider>
+    </DispatchContext.Provider>
   );
 }
 
