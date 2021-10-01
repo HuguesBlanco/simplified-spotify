@@ -3,30 +3,28 @@ import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { useImmerReducer } from "use-immer";
 
-// Context
 import StateContext from "./StateContext";
 import DispatchContext from "./DispatchContext";
 
-// Components
 import Connection from "./components/Connection";
 import Home from "./components/Home";
 
 function App() {
   // Context
-  function globalStateReducer(draft, action) {
+  function globalReducer(draft, action) {
     switch (action.type) {
-      case "setToken":
-        draft.apiToken = action.value;
+      case "setSpotifyToken":
+        draft.spotifyToken = action.value;
         break;
       default:
         throw new Error("The action type doesn't match any case");
     }
   }
 
-  const initialGlobalState = { apiToken: null };
+  const initialGlobalState = { spotifyToken: null };
 
   const [globalState, globalDispatch] = useImmerReducer(
-    globalStateReducer,
+    globalReducer,
     initialGlobalState
   );
 
