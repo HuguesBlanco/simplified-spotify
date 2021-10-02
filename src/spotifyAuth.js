@@ -14,7 +14,7 @@ function createConnectionUrl() {
   const url = "https://accounts.spotify.com/authorize";
   const clientId = process.env.REACT_APP_CLIENT_ID;
   const responseType = "token";
-  const redirectUri = "http://localhost:3000/home";
+  const redirectUri = "http://localhost:3000/login-callback";
   const scope = ["user-read-private", "user-read-email"];
 
   // State parameter
@@ -39,6 +39,7 @@ function createConnectionUrl() {
  * @property {string} expires_in Time before the token expires.
  * @property {string} state The state sent with the token demand.
  * @property {string} token_type Type of the token.
+ * @property {Date} creationDate Creation date of the token.
  * @returns {TokenInfo} The token and all informations link to it.
  */
 function getTokenInfo() {
@@ -51,6 +52,7 @@ function getTokenInfo() {
 
   const organisedParams = params.reduce((orgParams, param) => {
     orgParams[param[1]] = param[2];
+
     return orgParams;
   }, {});
 
@@ -81,7 +83,27 @@ function getTokenInfo() {
     );
   }
 
-  return organisedParams;
+  // Convert key to camel case
+  function snakeToCamelCase(str) {
+    const regex = /_\w/g;
+    function handling(match) {
+      return match.substring(1).toUpperCase();
+    }
+
+    return str.replace(regex, handling);
+  }
+
+  const tokenInfo = Object.entries(organisedParams).reduce((allInfo, info) => {
+    const key = snakeToCamelCase(info[0]);
+    const value = info[1];
+    allInfo[key] = value;
+    return allInfo;
+  }, {});
+
+  // Add creation time
+  tokenInfo.creationTime = new Date();
+
+  return tokenInfo;
 }
 
 /**
