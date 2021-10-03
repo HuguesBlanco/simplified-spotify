@@ -1,44 +1,77 @@
 import "./App.css";
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { useImmerReducer } from "use-immer";
 
 import StateContext from "./StateContext";
 import DispatchContext from "./DispatchContext";
 
-import Connection from "./components/Connection";
+import Login from "./components/Login";
+import LoginCallback from "./components/LoginCallback";
 import Home from "./components/Home";
+import NotFound from "./components/NotFound";
+import Error from "./components/Error";
 
 function App() {
-  // Context
   function globalReducer(draft, action) {
     switch (action.type) {
+      case "checkConnection":
+        if (!draft.spotifyToken) {
+          draft.isLoggedIn = false;
+          break;
+        }
+
+        const now = new Date();
+        const connectionTime = draft.spotifyToken.creationTime;
+        const timeConnected = now - connectionTime;
+        const timeConnectedInSec = Math.ceil(timeConnected / 1000);
+        const timeBeforeExpiresInSec = draft.spotifyToken.expiresIn;
+        if (timeConnectedInSec >= timeBeforeExpiresInSec) {
+          draft.isLoggedIn = false;
+          break;
+        }
+
+        draft.isLoggedIn = true;
+        break;
+
       case "setSpotifyToken":
         draft.spotifyToken = action.value;
         break;
+
       default:
         throw new Error("The action type doesn't match any case");
     }
   }
 
-  const initialGlobalState = { spotifyToken: null };
+  const initialGlobalState = { spotifyToken: null, isLoggedIn: false };
 
-  const [globalState, globalDispatch] = useImmerReducer(
+  const [appState, appDispatch] = useImmerReducer(
     globalReducer,
     initialGlobalState
   );
 
-  // Router
   return (
-    <DispatchContext.Provider value={globalDispatch}>
-      <StateContext.Provider value={globalState}>
+    <DispatchContext.Provider value={appDispatch}>
+      <StateContext.Provider value={appState}>
         <BrowserRouter>
           <Switch>
             <Route path="/" exact>
-              <Connection />
+              <Redirect to="/login" />
+            </Route>
+            <Route path="/login" exact>
+              <Login />
+            </Route>
+            <Route path="/login-callback" exact>
+              <LoginCallback />
             </Route>
             <Route path="/home" exact>
-              <Home />
+              {appState.isLoggedIn ? <Home /> : <Redirect to="/login" />}
+            </Route>
+            <Route path="/error">
+              <Error />
+            </Route>
+            <Route path="*">
+              <NotFound />
             </Route>
           </Switch>
         </BrowserRouter>

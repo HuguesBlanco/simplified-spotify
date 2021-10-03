@@ -7,10 +7,9 @@ function Connection() {
   return (
     <>
       <p>Connection page</p>
-      <p className="text-center">
+      <p>
         <a href={connectionUrl}>Connect through Spotify</a>
       </p>
-      <p>{connectionUrl}</p>
     </>
   );
 }
