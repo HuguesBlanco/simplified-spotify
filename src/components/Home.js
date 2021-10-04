@@ -3,6 +3,9 @@ import React, { useContext } from "react";
 import StateContext from "../StateContext";
 
 import Page from "./Page";
+import SearchTrack from "./SearchTrack";
+import AddPlaylist from "./AddPlaylist";
+import Playlist from "./Playlist";
 
 function Home() {
   const appState = useContext(StateContext);
@@ -12,7 +15,11 @@ function Home() {
 
   return (
     <Page title="Homepage">
-      <p>Homepage</p>
+      <div className="row">
+        <SearchTrack />
+        <AddPlaylist />
+      </div>
+      <Playlist />
     </Page>
   );
 }
