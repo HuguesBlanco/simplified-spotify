@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 
 import StateContext from "../StateContext";
 
+import Page from "./Page";
+
 function Home() {
   const appState = useContext(StateContext);
 
@@ -9,9 +11,9 @@ function Home() {
   console.log("IS LOGGED IN: ", appState.isLoggedIn);
 
   return (
-    <>
-      <p>Home page</p>
-    </>
+    <Page title="Homepage">
+      <p>Homepage</p>
+    </Page>
   );
 }
 
