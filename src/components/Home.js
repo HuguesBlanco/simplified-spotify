@@ -1,25 +1,20 @@
-import React, { useContext } from "react";
-
-import StateContext from "../StateContext";
+import React from "react";
 
 import Page from "./Page";
 import SearchTrack from "./SearchTrack";
 import AddPlaylist from "./AddPlaylist";
-import Playlist from "./Playlist";
+import Playlists from "./Playlists";
 
 function Home() {
-  const appState = useContext(StateContext);
-
-  console.log("TOKEN: ", appState.spotifyToken);
-  console.log("IS LOGGED IN: ", appState.isLoggedIn);
-
   return (
     <Page title="Homepage">
       <div className="row">
         <SearchTrack />
         <AddPlaylist />
       </div>
-      <Playlist />
+      <div>
+        <Playlists />
+      </div>
     </Page>
   );
 }

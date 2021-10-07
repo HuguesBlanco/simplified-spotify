@@ -15,7 +15,10 @@ function createConnectionUrl() {
   const clientId = process.env.REACT_APP_CLIENT_ID;
   const responseType = "token";
   const redirectUri = "http://localhost:3000/login-callback";
-  const scope = ["user-read-private", "user-read-email"];
+  const scope = [
+    "playlist-read-private", // Playlist component
+    "playlist-read-collaborative" // Playlist component
+  ];
 
   // State parameter
   const state = generateRandomString(16);
