@@ -16,6 +16,8 @@ function createConnectionUrl() {
   const responseType = "token";
   const redirectUri = "http://localhost:3000/login-callback";
   const scope = [
+    "user-read-email", // Home component
+    "user-read-private", // Home component
     "playlist-read-private", // Playlist component
     "playlist-read-collaborative" // Playlist component
   ];

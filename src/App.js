@@ -38,12 +38,20 @@ function App() {
         draft.spotifyToken = action.value;
         break;
 
+      case "setUserInfo":
+        draft.userInfo = action.value;
+        break;
+
       default:
         throw new Error("The action type doesn't match any case");
     }
   }
 
-  const initialGlobalState = { spotifyToken: null, isLoggedIn: false };
+  const initialGlobalState = {
+    spotifyToken: null,
+    isLoggedIn: false,
+    userInfo: null
+  };
 
   const [appState, appDispatch] = useImmerReducer(
     globalReducer,
