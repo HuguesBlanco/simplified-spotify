@@ -19,7 +19,9 @@ function createConnectionUrl() {
     "user-read-email", // Home component
     "user-read-private", // Home component
     "playlist-read-private", // Playlist component
-    "playlist-read-collaborative" // Playlist component
+    "playlist-read-collaborative", // Playlist component
+    "playlist-modify-private", // AddPlaylist component
+    "playlist-modify-public" // AddPlaylist component
   ];
 
   // State parameter
