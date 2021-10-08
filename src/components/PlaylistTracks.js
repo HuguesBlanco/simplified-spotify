@@ -50,9 +50,6 @@ function PlaylistTracks(props) {
   } else if (tracks.total === 0) {
     return <div>You don't have any playlist</div>;
   } else {
-    // DEBUG
-    console.log(tracks);
-
     return (
       <>
         {tracks.items.map((trackInfo) => (
