@@ -2,9 +2,11 @@ import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
 
+import DispatchConstext from "../DispatchContext";
 import StateContext from "../StateContext";
 
 function AddPlaylist() {
+  const appDispatch = useContext(DispatchConstext);
   const appState = useContext(StateContext);
 
   const history = useHistory();
@@ -40,7 +42,7 @@ function AddPlaylist() {
           }
         }
       );
-      // TO DO: trigger playlist fetch
+      appDispatch({ type: "triggerPlaylistsRefresh" });
     } catch (error) {
       if (process.env.NODE_ENV === "development") {
         throw error;

@@ -42,6 +42,10 @@ function App() {
         draft.userInfo = action.value;
         break;
 
+      case "triggerPlaylistsRefresh":
+        draft.playlistRefreshTrigger = !draft.playlistRefreshTrigger;
+        break;
+
       default:
         throw new Error("The action type doesn't match any case");
     }
@@ -50,7 +54,8 @@ function App() {
   const initialGlobalState = {
     spotifyToken: null,
     isLoggedIn: false,
-    userInfo: null
+    userInfo: null,
+    playlistsRefreshTrigger: false
   };
 
   const [appState, appDispatch] = useImmerReducer(

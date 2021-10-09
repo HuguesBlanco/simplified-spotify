@@ -22,6 +22,8 @@ function Playlist() {
 
   // Recover insfo about user's playlists from Spotify API.
   useEffect(() => {
+    setArePlaylistsLoading(true);
+
     const playlistsRequest = Axios.CancelToken.source();
 
     async function fetchPlaylists() {
@@ -38,6 +40,7 @@ function Playlist() {
         );
 
         setPlaylists(response.data);
+        setSelectedPlaylistIndex(0);
         setArePlaylistsLoading(false);
       } catch (error) {
         if (process.env.NODE_ENV === "development") {
@@ -51,7 +54,7 @@ function Playlist() {
     return () => {
       playlistsRequest.cancel();
     };
-  }, [appState.spotifyToken, history]);
+  }, [appState.spotifyToken, appState.playlistRefreshTrigger, history]);
 
   // Vue
   if (arePlaylistsLoading) {
