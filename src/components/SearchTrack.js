@@ -5,29 +5,30 @@ import Axios from "axios";
 
 import StateContext from "../StateContext";
 
+import DisplayTracksFound from "./DisplayTracksFound";
+
 function SearchTrack() {
   const appState = useContext(StateContext);
 
   const history = useHistory();
 
   const [search, setSearch] = useImmer({
-    isAcivated: false,
+    isActive: false,
     termTyped: "",
     validatedTerm: "",
     isWaintingForResponse: false,
-    spotifyApiResponse: {},
-    lastTermAskedToApi: ""
+    spotifyApiResponse: null
   });
 
   function activateSearch() {
     setSearch((draft) => {
-      draft.isAcivated = true;
+      draft.isActive = true;
     });
   }
 
   function desactivateSearch() {
     setSearch((draft) => {
-      draft.isAcivated = false;
+      draft.isActive = false;
     });
   }
 
@@ -37,7 +38,7 @@ function SearchTrack() {
     });
   }
 
-  // Validate search term if typing stop for a moment
+  // Validate search term if typing stop for a moment.
   useEffect(() => {
     const validatedSearch = setTimeout(() => {
       setSearch((draft) => {
@@ -50,14 +51,13 @@ function SearchTrack() {
     };
   }, [search.termTyped, setSearch]);
 
-  // Call Spotify Search API when term is validated
+  // Call Spotify Search API when term is validated.
+  // Spotify API documentation to search items: https://developer.spotify.com/documentation/web-api/reference/#endpoint-search
   useEffect(() => {
-    if (
-      search.isAcivated &&
-      search.validatedTerm !== "" &&
-      search.validatedTerm !== search.lastTermAskedToApi
-    ) {
-      // Spotify API documentation to search items: https://developer.spotify.com/documentation/web-api/reference/#endpoint-search
+    if (search.validatedTerm !== "") {
+      setSearch((draft) => {
+        draft.isWaintingForResponse = true;
+      });
 
       const searchRequestCancelToken = Axios.CancelToken.source();
 
@@ -73,9 +73,10 @@ function SearchTrack() {
       })
         .then((response) => {
           setSearch((draft) => {
+            draft.isWaintingForResponse = false;
             draft.spotifyApiResponse = response.data;
-            draft.lastTermAskedToApi = response.config.params.q;
           });
+          console.log(response.data);
         })
         .catch((error) => {
           if (process.env.NODE_ENV === "development") {
@@ -88,13 +89,15 @@ function SearchTrack() {
           "Request to Spotify Search API canceled because another one was sent before receiving the response of the first one"
         );
       };
+    } else {
+      setSearch((draft) => {
+        draft.spotifyApiResponse = null;
+      });
     }
   }, [
     appState.spotifyToken.accessToken,
     appState.spotifyToken.tokenType,
     history,
-    search.isAcivated,
-    search.lastTermAskedToApi,
     search.validatedTerm,
     setSearch
   ]);
@@ -106,6 +109,7 @@ function SearchTrack() {
           id="searchInput"
           className="form-control"
           type="text"
+          autoComplete="off"
           placeholder="The track I search for"
           value={search.termTyped}
           onChange={handleSearchInput}
@@ -114,6 +118,7 @@ function SearchTrack() {
         />
         <label htmlFor="searchInput">Search for a track</label>
       </div>
+      {search.isActive ? <DisplayTracksFound search={search} /> : ""}
     </div>
   );
 }
