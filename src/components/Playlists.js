@@ -3,15 +3,17 @@ import { useHistory } from "react-router-dom";
 import Axios from "axios";
 
 import StateContext from "../StateContext";
+import DispatchContext from "../DispatchContext";
 
 import PlaylistTracks from "./PlaylistTracks";
 
 function Playlist() {
   const appState = useContext(StateContext);
+  const DispatchState = useContext(DispatchContext);
 
   const history = useHistory();
 
-  const [playlists, setPlaylists] = useState();
+  const [playlists, setPlaylists] = useState(null);
   const [arePlaylistsLoading, setArePlaylistsLoading] = useState(true);
   const [selectedPlaylistIndex, setSelectedPlaylistIndex] = useState(0);
 
@@ -55,6 +57,16 @@ function Playlist() {
       playlistsRequest.cancel();
     };
   }, [appState.spotifyToken, appState.playlistRefreshTrigger, history]);
+
+  // Set selected playlist in global state.
+  useEffect(() => {
+    if (playlists) {
+      DispatchState({
+        type: "setCurrentPlaylist",
+        value: playlists.items[selectedPlaylistIndex]
+      });
+    }
+  }, [DispatchState, playlists, selectedPlaylistIndex]);
 
   // Vue
   if (arePlaylistsLoading) {

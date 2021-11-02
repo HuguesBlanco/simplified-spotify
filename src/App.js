@@ -42,6 +42,10 @@ function App() {
         draft.userInfo = action.value;
         break;
 
+      case "setCurrentPlaylist":
+        draft.currentPlaylist = action.value;
+        break;
+
       case "triggerPlaylistsRefresh":
         draft.playlistRefreshTrigger = !draft.playlistRefreshTrigger;
         break;
@@ -55,6 +59,7 @@ function App() {
     spotifyToken: null,
     isLoggedIn: false,
     userInfo: null,
+    currentPlaylist: null,
     playlistsRefreshTrigger: false
   };
 
