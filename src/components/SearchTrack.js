@@ -5,7 +5,7 @@ import Axios from "axios";
 
 import StateContext from "../StateContext";
 
-import DisplayTracksFound from "./DisplayTracksFound";
+import SearchItems from "./SearchItems";
 
 function SearchTrack() {
   const appState = useContext(StateContext);
@@ -76,7 +76,6 @@ function SearchTrack() {
             draft.isWaintingForResponse = false;
             draft.spotifyApiResponse = response.data;
           });
-          console.log(response.data);
         })
         .catch((error) => {
           if (process.env.NODE_ENV === "development") {
@@ -110,7 +109,7 @@ function SearchTrack() {
           className="form-control"
           type="text"
           autoComplete="off"
-          placeholder="The track I search for"
+          placeholder="The song I'm searching for"
           value={search.termTyped}
           onChange={handleSearchInput}
           onFocus={activateSearch}
@@ -118,7 +117,7 @@ function SearchTrack() {
         />
         <label htmlFor="searchInput">Search for a track</label>
       </div>
-      {search.isActive ? <DisplayTracksFound search={search} /> : ""}
+      {search.isActive && <SearchItems search={search} />}
     </div>
   );
 }
