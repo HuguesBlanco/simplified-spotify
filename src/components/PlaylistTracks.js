@@ -48,7 +48,7 @@ function PlaylistTracks(props) {
   if (areTracksLoading) {
     return <div>Loading...</div>;
   } else if (tracks.total === 0) {
-    return <div>You don't have any playlist</div>;
+    return <div>There is no track in this playlist</div>;
   } else {
     return (
       <>
