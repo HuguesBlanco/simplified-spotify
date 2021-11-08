@@ -46,6 +46,10 @@ function App() {
         draft.currentPlaylist = action.value;
         break;
 
+      case "setTracksInCurrentPlaylist":
+        draft.tracksInCurrentPlaylist = action.value;
+        break;
+
       case "triggerPlaylistsRefresh":
         draft.playlistRefreshTrigger = !draft.playlistRefreshTrigger;
         break;
@@ -60,6 +64,7 @@ function App() {
     isLoggedIn: false,
     userInfo: null,
     currentPlaylist: null,
+    tracksInCurrentPlaylist: null,
     playlistsRefreshTrigger: false
   };
 

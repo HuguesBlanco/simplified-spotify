@@ -3,14 +3,15 @@ import { useHistory } from "react-router-dom";
 import Axios from "axios";
 
 import StateContext from "../StateContext";
+import DispatchContext from "../DispatchContext";
 
 function PlaylistTracks(props) {
   const history = useHistory();
 
   const appState = useContext(StateContext);
+  const appDispatch = useContext(DispatchContext);
 
   const [areTracksLoading, setAreTracksLoading] = useState(true);
-  const [tracks, setTracks] = useState();
 
   // Recover infos about playlist's tracks from Spotify API.
   useEffect(() => {
@@ -28,7 +29,10 @@ function PlaylistTracks(props) {
           }
         });
 
-        setTracks(response.data);
+        appDispatch({
+          type: "setTracksInCurrentPlaylist",
+          value: response.data
+        });
         setAreTracksLoading(false);
       } catch (error) {
         if (process.env.NODE_ENV === "development") {
@@ -42,17 +46,17 @@ function PlaylistTracks(props) {
     return () => {
       tracksRequest.cancel();
     };
-  }, [appState.spotifyToken, props.playlist, history]);
+  }, [appDispatch, appState.spotifyToken, props.playlist, history]);
 
   // Vue
   if (areTracksLoading) {
     return <div>Loading...</div>;
-  } else if (tracks.total === 0) {
+  } else if (appState.tracksInCurrentPlaylist.total === 0) {
     return <div>There is no track in this playlist</div>;
   } else {
     return (
       <>
-        {tracks.items.map((trackInfo) => (
+        {appState.tracksInCurrentPlaylist.items.map((trackInfo) => (
           <section key={trackInfo.track.id}>
             <div className="container">
               <div className="row">
