@@ -17,37 +17,34 @@ function PlaylistTracks(props) {
   const [areTracksLoading, setAreTracksLoading] = useState(true);
 
   // Recover infos about playlist's tracks from Spotify API.
+  // Spotify API documentation to get a Playlist's Items: https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-playlists-tracks
   useEffect(() => {
     setAreTracksLoading(true);
 
-    const tracksRequest = Axios.CancelToken.source();
+    const tracksRequestCancelToken = Axios.CancelToken.source();
 
-    async function fetchTracks() {
-      // Spotify API documentation to get a Playlist's Items: https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-playlists-tracks
-      try {
-        const response = await Axios.get(props.playlist.tracks.href, {
-          cancelToken: tracksRequest.token,
-          headers: {
-            Authorization: `${appState.spotifyToken.tokenType} ${appState.spotifyToken.accessToken}`
-          }
-        });
-
+    Axios.get(props.playlist.tracks.href, {
+      cancelToken: tracksRequestCancelToken.token,
+      headers: {
+        Authorization: `${appState.spotifyToken.tokenType} ${appState.spotifyToken.accessToken}`
+      }
+    })
+      .then((response) => {
         appDispatch({
           type: "setTracksInCurrentPlaylist",
           value: response.data
         });
         setAreTracksLoading(false);
-      } catch (error) {
+      })
+      .catch((error) => {
         if (process.env.NODE_ENV === "development") {
           throw error;
         }
         history.push("/error");
-      }
-    }
-    fetchTracks();
+      });
 
     return () => {
-      tracksRequest.cancel();
+      tracksRequestCancelToken.cancel();
     };
   }, [appDispatch, appState.spotifyToken, props.playlist, history]);
 
