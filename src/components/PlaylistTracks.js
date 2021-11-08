@@ -5,6 +5,9 @@ import Axios from "axios";
 import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
 
+import PlaylistItemMessage from "./PlaylistItemMessage";
+import PlaylistItemTrack from "./PlaylistItemTrack";
+
 function PlaylistTracks(props) {
   const history = useHistory();
 
@@ -50,34 +53,24 @@ function PlaylistTracks(props) {
 
   // Vue
   if (areTracksLoading) {
-    return <div>Loading...</div>;
-  } else if (appState.tracksInCurrentPlaylist.total === 0) {
-    return <div>There is no track in this playlist</div>;
+    return <PlaylistItemMessage message="Loading..." />;
   } else {
-    return (
-      <>
-        {appState.tracksInCurrentPlaylist.items.map((trackInfo) => (
-          <section key={trackInfo.track.id}>
-            <div className="container">
-              <div className="row">
-                <div className="col-1">
-                  <img
-                    src={trackInfo.track.album.images[2].url}
-                    alt={`${trackInfo.track.album.name} sleeve`}
-                  />
-                </div>
-                <div className="col-4">{trackInfo.track.name}</div>
-                <div className="col-3">{trackInfo.track.album.name}</div>
-                <div className="col-2">
-                  {trackInfo.track.album.release_date}
-                </div>
-                <div className="col-2">remove it</div>
-              </div>
-            </div>
-          </section>
-        ))}
-      </>
-    );
+    if (appState.tracksInCurrentPlaylist.total === 0) {
+      return (
+        <PlaylistItemMessage message="There is no track in this playlist" />
+      );
+    } else {
+      return (
+        <>
+          {appState.tracksInCurrentPlaylist.items.map((trackInfo) => (
+            <PlaylistItemTrack
+              key={trackInfo.track.id + trackInfo.added_at}
+              trackInfo={trackInfo}
+            />
+          ))}
+        </>
+      );
+    }
   }
 }
 
