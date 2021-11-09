@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
+import { useOnClickOutsideElement } from "../customHooks";
 import { useImmer } from "use-immer";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
@@ -8,9 +9,9 @@ import StateContext from "../StateContext";
 import SearchItems from "./SearchItems";
 
 function SearchTrack() {
-  const appState = useContext(StateContext);
-
   const history = useHistory();
+
+  const appState = useContext(StateContext);
 
   const [search, setSearch] = useImmer({
     isActive: false,
@@ -20,23 +21,27 @@ function SearchTrack() {
     spotifyApiResponse: null
   });
 
+  function handleSearchInput(event) {
+    setSearch((draft) => {
+      draft.termTyped = event.target.value;
+    });
+  }
+
   function activateSearch() {
     setSearch((draft) => {
       draft.isActive = true;
     });
   }
 
-  function desactivateSearch() {
+  function deactivateSearch() {
     setSearch((draft) => {
       draft.isActive = false;
     });
   }
 
-  function handleSearchInput(event) {
-    setSearch((draft) => {
-      draft.termTyped = event.target.value;
-    });
-  }
+  // Close search when click outside the component.
+  const searchComponentRef = useRef(null);
+  useOnClickOutsideElement(searchComponentRef.current, deactivateSearch);
 
   // Validate search term if typing stop for a moment.
   useEffect(() => {
@@ -102,7 +107,7 @@ function SearchTrack() {
   ]);
 
   return (
-    <div className="col-lg-8">
+    <div className="col-lg-8" ref={searchComponentRef}>
       <div className="form-floating">
         <input
           id="searchInput"
@@ -113,7 +118,6 @@ function SearchTrack() {
           value={search.termTyped}
           onChange={handleSearchInput}
           onFocus={activateSearch}
-          onBlur={desactivateSearch}
         />
         <label htmlFor="searchInput">Search for a track</label>
       </div>
