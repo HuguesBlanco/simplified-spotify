@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import StateContext from "../StateContext";
+
+import RemoveTrackFromPlaylistButton from "./RemoveTrackFromPlaylistButton";
 
 function PlaylistItemTrack(props) {
+  const appState = useContext(StateContext);
+
   const trackInfoToDisplay = props.trackInfo.track;
 
   return (
@@ -16,7 +22,12 @@ function PlaylistItemTrack(props) {
           <div className="col-4">{trackInfoToDisplay.name}</div>
           <div className="col-3">{trackInfoToDisplay.album.name}</div>
           <div className="col-2">{trackInfoToDisplay.album.release_date}</div>
-          <div className="col-2">remove it</div>
+          <div className="col-2">
+            <RemoveTrackFromPlaylistButton
+              trackUri={trackInfoToDisplay.uri}
+              playlistId={appState.currentPlaylist.id}
+            />
+          </div>
         </div>
       </div>
     </section>
