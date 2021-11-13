@@ -23,38 +23,32 @@ function Playlist() {
   }
 
   // Recover insfo about user's playlists from Spotify API.
+  // Spotify API documentation to get a list of current user's playlists: https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-a-list-of-current-users-playlists
   useEffect(() => {
     setArePlaylistsLoading(true);
 
-    const playlistsRequest = Axios.CancelToken.source();
+    const playlistsRequestCancelToken = Axios.CancelToken.source();
 
-    async function fetchPlaylists() {
-      // Spotify API documentation to get a list of current user's playlists: https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-a-list-of-current-users-playlists
-      try {
-        const response = await Axios.get(
-          "https://api.spotify.com/v1/me/playlists",
-          {
-            cancelToken: playlistsRequest.token,
-            headers: {
-              Authorization: `${appState.spotifyToken.tokenType} ${appState.spotifyToken.accessToken}`
-            }
-          }
-        );
-
+    Axios.get("https://api.spotify.com/v1/me/playlists", {
+      cancelToken: playlistsRequestCancelToken.token,
+      headers: {
+        Authorization: `${appState.spotifyToken.tokenType} ${appState.spotifyToken.accessToken}`
+      }
+    })
+      .then((response) => {
         setPlaylists(response.data);
         setSelectedPlaylistIndex(0);
         setArePlaylistsLoading(false);
-      } catch (error) {
+      })
+      .catch((error) => {
         if (process.env.NODE_ENV === "development") {
           throw error;
         }
         history.push("/error");
-      }
-    }
-    fetchPlaylists();
+      });
 
     return () => {
-      playlistsRequest.cancel();
+      playlistsRequestCancelToken.cancel();
     };
   }, [appState.spotifyToken, appState.playlistRefreshTrigger, history]);
 
