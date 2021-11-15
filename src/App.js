@@ -51,7 +51,7 @@ function App() {
         break;
 
       case "triggerPlaylistsRefresh":
-        draft.playlistRefreshTrigger = !draft.playlistRefreshTrigger;
+        draft.playlistsRefreshTrigger = !draft.playlistsRefreshTrigger;
         break;
 
       default:

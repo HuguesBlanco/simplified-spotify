@@ -50,7 +50,7 @@ function Playlist() {
     return () => {
       playlistsRequestCancelToken.cancel();
     };
-  }, [appState.spotifyToken, appState.playlistRefreshTrigger, history]);
+  }, [appState.spotifyToken, appState.playlistsRefreshTrigger, history]);
 
   // Set selected playlist in global state.
   useEffect(() => {
