@@ -9,17 +9,16 @@ import PlaylistTracks from "./PlaylistTracks";
 
 function Playlist() {
   const appState = useContext(StateContext);
-  const DispatchState = useContext(DispatchContext);
+  const appDispatch = useContext(DispatchContext);
 
   const history = useHistory();
 
   const [playlists, setPlaylists] = useState(null);
   const [arePlaylistsLoading, setArePlaylistsLoading] = useState(true);
-  const [selectedPlaylistIndex, setSelectedPlaylistIndex] = useState(0);
 
   function handlePlaylistChange(event) {
     const playlistIndex = Number(event.target.value);
-    setSelectedPlaylistIndex(playlistIndex);
+    appDispatch({ type: "setSelectedPlaylistIndex", value: playlistIndex });
   }
 
   // Recover insfo about user's playlists from Spotify API.
@@ -37,7 +36,6 @@ function Playlist() {
     })
       .then((response) => {
         setPlaylists(response.data);
-        setSelectedPlaylistIndex(0);
         setArePlaylistsLoading(false);
       })
       .catch((error) => {
@@ -52,15 +50,20 @@ function Playlist() {
     };
   }, [appState.spotifyToken, appState.playlistsRefreshTrigger, history]);
 
+  // Select first playlist if no playlist are selected (when app starts)
+  useEffect(() => {
+    appDispatch({ type: "setSelectedPlaylistIndex", value: 0 });
+  }, [appDispatch]);
+
   // Set selected playlist in global state.
   useEffect(() => {
     if (playlists) {
-      DispatchState({
+      appDispatch({
         type: "setCurrentPlaylist",
-        value: playlists.items[selectedPlaylistIndex]
+        value: playlists.items[appState.selectedPlaylistIndex]
       });
     }
-  }, [DispatchState, playlists, selectedPlaylistIndex]);
+  }, [appDispatch, playlists, appState.selectedPlaylistIndex]);
 
   // Vue
   if (arePlaylistsLoading) {
@@ -75,7 +78,7 @@ function Playlist() {
             <select
               className="form-select"
               onChange={handlePlaylistChange}
-              value={selectedPlaylistIndex}
+              value={appState.selectedPlaylistIndex}
             >
               {playlists.items.map((playlist, playlistIndex) => (
                 <option value={playlistIndex} key={playlist.id}>
@@ -85,11 +88,13 @@ function Playlist() {
             </select>
           </div>
           <div className="col-8">
-            {playlists.items[selectedPlaylistIndex].description}
+            {playlists.items[appState.selectedPlaylistIndex].description}
           </div>
         </div>
         <div className="row">
-          <PlaylistTracks playlist={playlists.items[selectedPlaylistIndex]} />
+          <PlaylistTracks
+            playlist={playlists.items[appState.selectedPlaylistIndex]}
+          />
         </div>
       </>
     );

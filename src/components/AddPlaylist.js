@@ -43,6 +43,7 @@ function AddPlaylist() {
         }
       );
       appDispatch({ type: "triggerPlaylistsRefresh" });
+      appDispatch({ type: "setSelectedPlaylistIndex", value: 0 });
     } catch (error) {
       if (process.env.NODE_ENV === "development") {
         throw error;

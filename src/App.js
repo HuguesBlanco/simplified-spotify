@@ -42,6 +42,10 @@ function App() {
         draft.userInfo = action.value;
         break;
 
+      case "setSelectedPlaylistIndex":
+        draft.selectedPlaylistIndex = action.value;
+        break;
+
       case "setCurrentPlaylist":
         draft.currentPlaylist = action.value;
         break;
@@ -63,6 +67,7 @@ function App() {
     spotifyToken: null,
     isLoggedIn: false,
     userInfo: null,
+    selectedPlaylistIndex: null,
     currentPlaylist: null,
     tracksInCurrentPlaylist: null,
     playlistsRefreshTrigger: false
