@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 function PlaylistDetails(props) {
   // Props
@@ -34,6 +35,14 @@ function PlaylistDetails(props) {
     );
   }
 
+  // unique IDs.
+  // Required to be sure that id of HTML elements are unique if this component is used several times.
+  // IDs start with "id-" because HTML IDs must start with a letter
+  const id1 = useRef(`id-${uuidv4()}`);
+  const id2 = useRef(`id-${uuidv4()}`);
+  const id3 = useRef(`id-${uuidv4()}`);
+  const id4 = useRef(`id-${uuidv4()}`);
+
   // Vue
   return (
     <div className="col-lg">
@@ -42,7 +51,7 @@ function PlaylistDetails(props) {
         type="button"
         className="btn btn-primary"
         data-bs-toggle="modal"
-        data-bs-target="#addPlaylistModal"
+        data-bs-target={`#${id1.current}`}
         onClick={handleModalOpening}
       >
         {oppeningButtonText}
@@ -52,15 +61,15 @@ function PlaylistDetails(props) {
       {/* modal - start */}
       <div
         className="modal fade"
-        id="addPlaylistModal"
+        id={id1.current}
         tabIndex="-1"
-        aria-labelledby="createPlaylistLabel"
+        aria-labelledby={id2.current}
         aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="createPlaylistLabel">
+              <h5 className="modal-title" id={id2.current}>
                 {modalTitle}
               </h5>
             </div>
@@ -70,22 +79,22 @@ function PlaylistDetails(props) {
                   <input
                     type="text"
                     className="form-control"
-                    id="playlistName"
+                    id={id3.current}
                     placeholder="Name your playlist"
                     value={playlistName}
                     onChange={handlePlaylistNameInput}
                   />
-                  <label htmlFor="playlistName">Playlist name</label>
+                  <label htmlFor={id3.current}>Playlist name</label>
                 </div>
                 <div className="form-floating">
                   <textarea
                     className="form-control"
                     placeholder="Describe your playlist"
-                    id="playlistDescription"
+                    id={id4.current}
                     value={playlistDescription}
                     onChange={handlePlaylistDescriptionInput}
                   ></textarea>
-                  <label htmlFor="playlistDescription">
+                  <label htmlFor={id4.current}>
                     Playlist description (optional)
                   </label>
                 </div>
