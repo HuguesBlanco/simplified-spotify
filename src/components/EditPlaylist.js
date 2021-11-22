@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
+import He from "he";
 
 import DispatchConstext from "../DispatchContext";
 import StateContext from "../StateContext";
@@ -15,7 +16,7 @@ function EditPlaylist(props) {
 
   function injectModalValues([, setPlaylistName], [, setPlaylistDescription]) {
     setPlaylistName(props.playlistInfo.name);
-    setPlaylistDescription(props.playlistInfo.description);
+    setPlaylistDescription(He.decode(props.playlistInfo.description));
   }
 
   function editPlaylistInfo([playlistName], [playlistDescription]) {

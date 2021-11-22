@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
+import He from "he";
 
 import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
@@ -89,7 +90,9 @@ function Playlist() {
             </select>
           </div>
           <div className="col-6">
-            {playlists.items[appState.selectedPlaylistIndex].description}
+            {He.decode(
+              playlists.items[appState.selectedPlaylistIndex].description
+            )}
           </div>
           <div className="col-2">
             <EditPlaylist
