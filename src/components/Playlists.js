@@ -5,6 +5,7 @@ import Axios from "axios";
 import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
 
+import EditPlaylist from "./EditPlaylist";
 import PlaylistTracks from "./PlaylistTracks";
 
 function Playlist() {
@@ -87,8 +88,13 @@ function Playlist() {
               ))}
             </select>
           </div>
-          <div className="col-8">
+          <div className="col-6">
             {playlists.items[appState.selectedPlaylistIndex].description}
+          </div>
+          <div className="col-2">
+            <EditPlaylist
+              playlistInfo={playlists.items[appState.selectedPlaylistIndex]}
+            />
           </div>
         </div>
         <div className="row">
