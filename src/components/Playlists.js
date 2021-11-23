@@ -23,7 +23,7 @@ function Playlist() {
     appDispatch({ type: "setSelectedPlaylistIndex", value: playlistIndex });
   }
 
-  // Recover insfo about user's playlists from Spotify API.
+  // Recover info about user's playlists from Spotify API.
   // Spotify API documentation to get a list of current user's playlists: https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-a-list-of-current-users-playlists
   useEffect(() => {
     setArePlaylistsLoading(true);
