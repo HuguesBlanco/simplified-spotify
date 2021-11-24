@@ -33,7 +33,6 @@ function RemoveTrackFromPlaylistButton(props) {
       })
       .catch((error) => {
         if (process.env.NODE_ENV === "development") {
-          console.log(error.message);
           throw error;
         }
         history.push("/error");
