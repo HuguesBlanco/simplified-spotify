@@ -6,6 +6,7 @@ import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
 
 import PlaylistItemMessage from "./PlaylistItemMessage";
+import TracksSorting from "./TracksSorting";
 import PlaylistItemTrack from "./PlaylistItemTrack";
 
 function PlaylistTracks(props) {
@@ -15,6 +16,7 @@ function PlaylistTracks(props) {
   const appDispatch = useContext(DispatchContext);
 
   const [areTracksLoading, setAreTracksLoading] = useState(true);
+  const [sortedTracks, setSortedTracks] = useState(null);
 
   // Recover infos about playlist's tracks from Spotify API.
   // Spotify API documentation to get a Playlist's Items: https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-playlists-tracks
@@ -34,6 +36,7 @@ function PlaylistTracks(props) {
           type: "setTracksInCurrentPlaylist",
           value: response.data
         });
+        setSortedTracks(response.data.items);
         setAreTracksLoading(false);
       })
       .catch((error) => {
@@ -59,7 +62,11 @@ function PlaylistTracks(props) {
     } else {
       return (
         <>
-          {appState.tracksInCurrentPlaylist.items.map((trackInfo) => (
+          <TracksSorting
+            tracks={appState.tracksInCurrentPlaylist.items}
+            setSortedTracks={setSortedTracks}
+          />
+          {sortedTracks.map((trackInfo) => (
             <PlaylistItemTrack
               key={trackInfo.track.id + trackInfo.added_at}
               trackInfo={trackInfo}
